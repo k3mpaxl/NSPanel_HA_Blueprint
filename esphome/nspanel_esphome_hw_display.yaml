@@ -10,7 +10,7 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
-  BAUD_RATE: '115200'
+  BAUD_RATE: '9600'
   BOOT_STEP_HW_DISPLAY: '5'
   bytes_per_char: "1"
   DISPLAY_CHARSET_CJK: '2'
