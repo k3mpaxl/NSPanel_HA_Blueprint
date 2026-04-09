@@ -42,6 +42,9 @@ substitutions:
   wifi_password: !secret wifi_password
 
   # Add-on configuration (if needed)
+  ## Upload TFT
+  upload_tft_automatically: true
+
   ## Add-on climate
   # heater_relay: "1"  # Possible values: "1" or "2"
 
@@ -62,6 +65,7 @@ packages:
       # - esphome/nspanel_esphome_addon_climate_heat.yaml
       # - esphome/nspanel_esphome_addon_climate_dual.yaml
       - esphome/nspanel_esphome_addon_cover.yaml
+      # - esphome/nspanel_esphome_addon_display_light.yaml  # Show the display as a light in Home Assistant
 ```
 
 ## Configuration

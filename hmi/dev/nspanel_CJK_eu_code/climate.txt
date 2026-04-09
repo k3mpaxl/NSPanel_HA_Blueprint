@@ -36,16 +36,20 @@ Page climate
                 vis button05,0
                 vis button06,0
                 vis button07,0
+                button01.font=button_font.val
+                button02.font=button_font.val
+                button03.font=button_font.val
+                button04.font=button_font.val
+                button05.font=button_font.val
+                button06.font=button_font.val
+                button07.font=button_font.val
+                button08.font=button_font.val
+                button09.font=button_font.val
             }else
             {
                 page home_page_id
             }
-            printh 92
-            prints "current_page",0
-            printh 00
-            prints "climate",0
-            printh 00
-            printh FF FF FF
+            sendme
         
         Page Exit Event
             covx embedded.val,va2.txt,0,0
@@ -53,7 +57,7 @@ Page climate
             {
                 timer0.en=0
                 covx temp_number0.val,va1.txt,0,0
-                climatesetting.txt="{\"page\": \"climate\", \"key\": \"temperature\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+                climatesetting.txt="page,climate.temperature,"+va1.txt+","+va2.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -65,7 +69,7 @@ Page climate
             {
                 timer1.en=0
                 covx temp_number1.val,va1.txt,0,0
-                climatesetting.txt="{\"page\": \"climate\", \"key\": \"target_temp_high\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+                climatesetting.txt="climate,target_temp_high,"+va1.txt+","+va2.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -77,7 +81,7 @@ Page climate
             {
                 timer2.en=0
                 covx temp_number2.val,va1.txt,0,0
-                climatesetting.txt="{\"page\": \"climate\", \"key\": \"target_temp_low\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+                climatesetting.txt="climate,target_temp_low,"+va1.txt+","+va2.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -98,7 +102,7 @@ Variable (string) climatesetting
         ID            : 25
         Scope         : local
         Text          : 
-        Max. Text Size: 255
+        Max. Text Size: 50
     
 Variable (string) lastclick
     Attributes
@@ -206,6 +210,12 @@ Variable (string) dec_separator
         Scope         : local
         Text          : .
         Max. Text Size: 5
+    
+Variable (int32) button_font
+    Attributes
+        ID   : 54
+        Scope: global
+        Value: 8
     
 Text current_temp
     Attributes
@@ -511,10 +521,10 @@ Text button01
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 54
+        x coordinate            : 25
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -534,7 +544,7 @@ Text button01
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"auto\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,auto,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -549,10 +559,10 @@ Text button02
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 105
+        x coordinate            : 85
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -572,7 +582,7 @@ Text button02
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"heat_cool\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,heat_cool,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -587,10 +597,10 @@ Text button03
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 156
+        x coordinate            : 145
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -610,7 +620,7 @@ Text button03
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"heat\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,heat,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -625,10 +635,10 @@ Text button04
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 207
+        x coordinate            : 205
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -648,7 +658,7 @@ Text button04
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"cool\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,cool,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -663,10 +673,10 @@ Text button05
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 258
+        x coordinate            : 265
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -686,7 +696,7 @@ Text button05
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"dry\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,dry,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -701,10 +711,10 @@ Text button06
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 309
+        x coordinate            : 325
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -724,7 +734,7 @@ Text button06
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"fan_only\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,fan_only,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -739,10 +749,10 @@ Text button07
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 360
+        x coordinate            : 385
         y coordinate            : 264
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -762,7 +772,7 @@ Text button07
     Events
         Touch Release Event
             covx embedded.val,va2.txt,0,0
-            lastclick.txt="{\"page\": \"climate\", \"key\": \"hvac_mode\", \"value\": \"off\", \"embedded\": "+va2.txt+"}"
+            lastclick.txt="climate,hvac_mode,off,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -777,10 +787,10 @@ Text button08
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 34
+        x coordinate            : 30
         y coordinate            : 40
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -806,7 +816,7 @@ Text button08
             if(click_timer.en==1)
             {
                 click_timer.en=0
-                lastclick.txt="{\"page\": \"climate\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
+                lastclick.txt="climate,short_click,"+click_comp.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -824,8 +834,8 @@ Text button09
         Opacity                 : 127
         x coordinate            : 408
         y coordinate            : 40
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 45
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -851,7 +861,7 @@ Text button09
             if(click_timer.en==1)
             {
                 click_timer.en=0
-                lastclick.txt="{\"page\": \"climate\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
+                lastclick.txt="climate,short_click,"+click_comp.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -1293,7 +1303,7 @@ Timer timer0
             timer0.en=0
             covx embedded.val,va2.txt,0,0
             covx temp_number0.val,va1.txt,0,0
-            climatesetting.txt="{\"page\": \"climate\", \"key\": \"temperature\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+            climatesetting.txt="climate,temperature,"+va1.txt+","+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1310,7 +1320,7 @@ Timer click_timer
     
     Events
         Timer Event
-            lastclick.txt="{\"page\": \"climate\", \"event\": \"long_click\", \"component\": \""+click_comp.txt+"\"}"
+            lastclick.txt="climate,long_click,"+click_comp.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1331,7 +1341,7 @@ Timer timer1
             timer1.en=0
             covx embedded.val,va2.txt,0,0
             covx temp_number1.val,va1.txt,0,0
-            climatesetting.txt="{\"page\": \"climate\", \"key\": \"target_temp_high\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+            climatesetting.txt="climate,target_temp_high,"+va1.txt+","+va2.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1351,7 +1361,7 @@ Timer timer2
             timer2.en=0
             covx embedded.val,va2.txt,0,0
             covx temp_number2.val,va1.txt,0,0
-            climatesetting.txt="{\"page\": \"climate\", \"key\": \"target_temp_low\", \"value\": "+va1.txt+", \"embedded\": "+va2.txt+"}"
+            climatesetting.txt="climate,target_temp_low,"+va1.txt+","+va2.txt
             printh 92
             prints "localevent",0
             printh 00

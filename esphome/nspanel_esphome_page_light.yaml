@@ -7,25 +7,25 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_LIGHT: '19'
-  PAGE_LIGHT_ID: '10'
+  BOOT_STEP_PAGE_LIGHT: 19
+  PAGE_LIGHT_ID: 10
   TAG_PAGE_LIGHT: nspanel.page.light
 
 display:
   - id: !extend disp1
     on_touch:
       then:
-        - if:
-            condition:
-              - lambda: return (!touch_event);  // Release
-              - lambda: return (page_id == 10);  // Page light
-              - lambda: return (component_id == 32);  // power button
-            then:
-              - script.execute:
-                  id: ha_call_action
-                  service: "light.toggle"
-                  key: ""
-                  value: ""
+        - lambda: |-
+            if (
+                  page_id == ${PAGE_LIGHT_ID} and  // Page light
+                  !touch_event and                 // Release
+                  component_id == 32               // power button
+                ) {
+              fire_ha_event("action_call", {
+                {"action", "light.toggle"},
+                {"entity", detailed_entity->state.c_str()}
+              });
+            }
 
 esphome:
   platformio_options:
@@ -35,49 +35,84 @@ esphome:
 script:
   - id: !extend event_from_display
     then:
-      - if:
-          condition:
-            - lambda: return (page == "light");
-          then:
-            - lambda: |-
-                ESP_LOGD("${TAG_PAGE_LIGHT}", "New event from display on page 'light'");
-                const std::string key = json["key"];
-                const std::string component = json["component"];
-                if (key == "brightness_pct" or key == "color_temp") {
-                  ESP_LOGD("${TAG_PAGE_LIGHT}", "Set light attributes");
-                  const std::string value = json["value"];
-                  ha_call_action->execute("light.turn_on", key.c_str(), value.c_str());
-                } else if (component == "rgb_color") {
-                  JsonArray rgb_color = json["value"];
-                  // Send event to Home Assistant
-                  if (rgb_color.size() == 3) {
-                    ESP_LOGD("${TAG_PAGE_LIGHT}", "Setting light color");
-                    esphome::api::CustomAPIDevice ha_event;
-                    ha_event.fire_homeassistant_event("esphome.nspanel_ha_blueprint", {
-                      {"device_name", id(device_name).state},
-                      {"esphome_version", "${version}"},
-                      {"type", "action_call"},
-                      {"action", "light.turn_on"},
-                      {"key", "rgb_color"},
-                      {"red",to_string(rgb_color[0].as<int>())},
-                      {"green",to_string(rgb_color[1].as<int>())},
-                      {"blue",to_string(rgb_color[2].as<int>())},
-                      {"entity", detailed_entity->state.c_str()},
-                      {"tag", "${TAG_PAGE_LIGHT}"}
-                    });
-                  }
-                }
+      - lambda: |-
+          if (params[0] == "light") {
+            // CSV Format varies by type:
+            // light,brightness_pct,<value>
+            // light,color_temp_kelvin,<value>
+            // light,rgb_color,<red>,<green>,<blue>
+            // light,<component>,<event>,<value>
+
+            if (params_count < 3) {
+              ESP_LOGW("${TAG_PAGE_LIGHT}", "Need 3+ params");
+              return;
+            }
+
+            // Handle brightness and color temperature
+            if (params[1] == "brightness_pct" or params[1] == "color_temp_kelvin") {
+              if (params_count != 3) {
+                ESP_LOGW("${TAG_PAGE_LIGHT}", "Need 3 params");
+                return;
+              }
+
+              ESP_LOGV("${TAG_PAGE_LIGHT}", "key=%s, value=%s",
+                        params[1].c_str(), params[2].c_str());
+
+              fire_ha_event("action_call", {
+                {"action", "light.turn_on"},
+                {"key", params[1].c_str()},
+                {"value", params[2].c_str()},
+                {"entity", detailed_entity->state.c_str()}
+              });
+
+            } else if (params[1] == "rgb_color") {
+              // RGB color: light,rgb_color,<red>,<green>,<blue>
+              if (params_count != 5) {
+                ESP_LOGW("${TAG_PAGE_LIGHT}", "Need 5 params");
+                return;
+              }
+
+              ESP_LOGV("${TAG_PAGE_LIGHT}", "RGB: r=%s, g=%s, b=%s",
+                        params[2].c_str(), params[3].c_str(), params[4].c_str());
+
+              fire_ha_event("action_call", {
+                {"action", "light.turn_on"},
+                {"key", "rgb_color"},
+                {"red", params[2].c_str()},
+                {"green", params[3].c_str()},
+                {"blue", params[4].c_str()},
+                {"entity", detailed_entity->state.c_str()}
+              });
+
+            } else {
+              // Generic event: light,<component>,<event>,<value>
+              if (params_count != 4) {
+                ESP_LOGW("${TAG_PAGE_LIGHT}", "Bad params");
+                return;
+              }
+
+              ESP_LOGV("${TAG_PAGE_LIGHT}", "component=%s, event=%s, value=%s",
+                        params[1].c_str(), params[2].c_str(), params[3].c_str());
+
+              fire_ha_event("generic", {
+                {"page", "light"},
+                {"component", params[1].c_str()},
+                {"event", params[2].c_str()},
+                {"value", params[3].c_str()},
+                {"entity", detailed_entity->state.c_str()}
+              });
+            }
+          }
 
   - id: !extend page_change
     then:
-      - if:
-          condition:
-            - lambda: return new_page_id == ${PAGE_LIGHT_ID};
-          then:
-            - script.execute: page_light
+      - lambda: if (new_page_id == ${PAGE_LIGHT_ID}) page_light->execute();
 
   - id: page_light
     mode: single
     then:  # There's nothing here so far
 
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_light->stop();
 ...

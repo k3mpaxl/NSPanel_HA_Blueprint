@@ -1,0 +1,145 @@
+---
+name: Build ESPHome
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+    paths:
+      - "nspanel_esphome*.yaml"
+      - "esphome/nspanel_esphome*.yaml"
+      - "prebuilt/nspanel_esphome*.yaml"
+      - "prebuilt/wall_display*.yaml"
+      - ".github/workflows/esphome_build.yml"
+      - ".test/*.yaml"
+      - "*.h"
+      - "*.c"
+      - "*.cpp"
+      - "*.py"
+  schedule:
+    # Run daily at 10:00 AM UTC
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+env:
+  # Repository URL and ref for external_components resolution.
+  # For fork PRs, points to the fork so the PR code is actually tested.
+  REF_URL: >-
+    https://github.com/${{
+      github.event.pull_request.head.repo.full_name
+      || github.repository
+    }}
+  REF_NAME: ${{ github.head_ref || github.ref_name }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code_scan:
+    name: Code scan (YAML)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r .github/requirements.txt
+
+      - name: Validate YAML files
+        run: find . \( -name "*.yaml" -o -name "*.yml" \) -exec yamllint -c ./.rules/yamllint.yml {} +
+
+  # ===========================================================================
+  # ESPHome Latest
+  # ===========================================================================
+  build_latest:
+    name: ${{ matrix.firmware.name }} (latest)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware:
+          - name: Basic (IDF)
+            yaml-file: .test/esphome_idf_basic.yaml
+          - name: Basic (Arduino)
+            yaml-file: .test/esphome_ard_basic.yaml
+          - name: BLE Tracker
+            yaml-file: .test/esphome_idf_ble_tracker.yaml
+          - name: Bluetooth Proxy
+            yaml-file: .test/esphome_idf_bluetooth_proxy.yaml
+          - name: Climate Cool
+            yaml-file: .test/esphome_idf_climate_cool.yaml
+          - name: Climate Heat
+            yaml-file: .test/esphome_idf_climate_heat.yaml
+          - name: Climate Dual
+            yaml-file: .test/esphome_idf_climate_dual.yaml
+          - name: Cover
+            yaml-file: .test/esphome_idf_cover.yaml
+          - name: Customizations
+            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
+          - name: Climate Cool + Bluetooth Proxy
+            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
+          - name: Display as a Light
+            yaml-file: .test/esphome_idf_display_as_light.yaml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build firmware
+        uses: edwardtfn/build-action@add-substitutions-support
+        with:
+          yaml-file: ${{ matrix.firmware.yaml-file }}
+          substitutions: |
+            ref_name=${{ env.REF_NAME }}
+            ref_url=${{ env.REF_URL }}
+
+  # ===========================================================================
+  # ESPHome Dev
+  # ===========================================================================
+  build_dev:
+    name: ${{ matrix.firmware.name }} (dev)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware:
+          - name: Basic (IDF)
+            yaml-file: .test/esphome_idf_basic.yaml
+          - name: Basic (Arduino)
+            yaml-file: .test/esphome_ard_basic.yaml
+          - name: BLE Tracker
+            yaml-file: .test/esphome_idf_ble_tracker.yaml
+          - name: Bluetooth Proxy
+            yaml-file: .test/esphome_idf_bluetooth_proxy.yaml
+          - name: Climate Cool
+            yaml-file: .test/esphome_idf_climate_cool.yaml
+          - name: Climate Heat
+            yaml-file: .test/esphome_idf_climate_heat.yaml
+          - name: Climate Dual
+            yaml-file: .test/esphome_idf_climate_dual.yaml
+          - name: Cover
+            yaml-file: .test/esphome_idf_cover.yaml
+          - name: Customizations
+            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
+          - name: Climate Cool + Bluetooth Proxy
+            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
+          - name: Display as a Light
+            yaml-file: .test/esphome_idf_display_as_light.yaml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build firmware
+        uses: edwardtfn/build-action@add-substitutions-support
+        with:
+          yaml-file: ${{ matrix.firmware.yaml-file }}
+          version: dev
+          substitutions: |
+            ref_name=${{ env.REF_NAME }}
+            ref_url=${{ env.REF_URL }}
+...

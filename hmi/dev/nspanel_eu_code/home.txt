@@ -20,34 +20,15 @@ Page home
     Events
         Preinitialize Event
             dim=brightness
-            if(boot.progress.val<100)
-            {
-                page boot
-            }
-            printh 92
-            prints "current_page",0
-            printh 00
-            prints "home",0
-            printh 00
-            printh FF FF FF
             back_page_id=home_page_id
-            if(qrcode.qrcode_value.txt=="")
-            {
-                vis bt_qrcode,0
-            }
-            if(is_entitypage01>0||is_entitypage02>0||is_entitypage03>0||is_entitypage04>0)
-            {
-                vis bt_entities,1
-            }else
-            {
-                vis bt_entities,0
-            }
-            vis bt_utilities,is_utilities
+            is_entitypages=is_entitypage01|is_entitypage02|is_entitypage03|is_entitypage04
+            vis bt_entities,is_entitypages
             if(display_mode>=3)
             {
                 vis left_bt_text,0
                 vis right_bt_text,0
             }
+            sendme
         
 Variable (string) lastclick
     Attributes
@@ -102,7 +83,7 @@ Text indr_temp
         ID                      : 4
         Scope                   : global
         Dragging                : 0
-        Send Component ID       : on press and release
+        Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 50
         y coordinate            : 150
@@ -124,30 +105,12 @@ Text indr_temp
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
-    Events
-        Touch Press Event
-            click_comp.txt="indr_temp"
-            click_timer.en=1
-        
-        Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
-        
 Text outdoor_temp
     Attributes
         ID                      : 5
         Scope                   : global
         Dragging                : 0
-        Send Component ID       : on press and release
+        Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 120
         y coordinate            : 45
@@ -728,7 +691,7 @@ Text indr_temp_icon
         ID                      : 27
         Scope                   : global
         Dragging                : 0
-        Send Component ID       : on press and release
+        Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 15
         y coordinate            : 156
@@ -750,24 +713,6 @@ Text indr_temp_icon
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
-    Events
-        Touch Press Event
-            click_comp.txt="indr_temp_icon"
-            click_timer.en=1
-        
-        Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
-        
 Text bt_notific
     Attributes
         ID                      : 28
@@ -807,7 +752,7 @@ Text bt_qrcode
         ID                      : 29
         Scope                   : global
         Dragging                : 0
-        Send Component ID       : on press and release
+        Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 305
         y coordinate            : 230
@@ -823,19 +768,12 @@ Text bt_qrcode
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 
+        Text                    : \xee\x90\xb2
         Max. Text Size          : 3
         Word wrap               : disabled
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
-    Events
-        Touch Release Event
-            if(qrcode.qrcode_value.txt!="")
-            {
-                page qrcode
-            }
-        
 Text bt_entities
     Attributes
         ID                      : 30
@@ -914,21 +852,13 @@ Text button07
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button07"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text meridiem
     Attributes
@@ -993,21 +923,13 @@ Text button01
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button01"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text button02
     Attributes
@@ -1038,21 +960,13 @@ Text button02
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button02"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text button03
     Attributes
@@ -1083,21 +997,13 @@ Text button03
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button03"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text button04
     Attributes
@@ -1128,21 +1034,13 @@ Text button04
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button04"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text button05
     Attributes
@@ -1173,21 +1071,13 @@ Text button05
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button05"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text button06
     Attributes
@@ -1218,28 +1108,20 @@ Text button06
     
     Events
         Touch Press Event
+            short_click_tm.en=0
             click_comp.txt="button06"
             click_timer.en=1
         
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            click_timer.en=0
+            short_click_tm.en=1
         
 Text bt_utilities
     Attributes
         ID                      : 43
         Scope                   : global
         Dragging                : 0
-        Send Component ID       : on press and release
+        Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 205
         y coordinate            : 230
@@ -1255,19 +1137,12 @@ Text bt_utilities
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 
+        Text                    : \xee\x8a\x99
         Max. Text Size          : 3
         Word wrap               : disabled
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
-    Events
-        Touch Release Event
-            if(api==1)
-            {
-                page utilities
-            }
-        
 Text value03_icon
     Attributes
         ID                      : 44
@@ -1343,8 +1218,8 @@ Text bt_icon
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 
-        Max. Text Size          : 5
+        Text                    : \xee\x82\xae
+        Max. Text Size          : 3
         Word wrap               : disabled
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
@@ -1361,7 +1236,7 @@ Picture weather
         ID               : 7
         Scope            : global
         Dragging         : 0
-        Send Component ID: on press and release
+        Send Component ID: on release
         Opacity          : 127
         x coordinate     : 20
         y coordinate     : 45
@@ -1372,24 +1247,6 @@ Picture weather
         Effect Time      : 300
         Picture ID       : 1
     
-    Events
-        Touch Press Event
-            click_comp.txt="weather"
-            click_timer.en=1
-        
-        Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="{\"page\": \"home\", \"event\": \"short_click\", \"component\": \""+click_comp.txt+"\"}"
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
-        
 Timer swipestore
     Attributes
         ID         : 2
@@ -1422,7 +1279,8 @@ Timer click_timer
     
     Events
         Timer Event
-            lastclick.txt="{\"page\": \"home\", \"event\": \"long_click\", \"component\": \""+click_comp.txt+"\"}"
+            short_click_tm.en=0
+            lastclick.txt="home,long_click,"+click_comp.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1430,6 +1288,25 @@ Timer click_timer
             printh 00
             printh FF FF FF
             click_timer.en=0
+        
+Timer short_click_tm
+    Attributes
+        ID         : 47
+        Scope      : local
+        Period (ms): 100
+        Enabled    : no
+    
+    Events
+        Timer Event
+            click_timer.en=0
+            lastclick.txt="home,short_click,"+click_comp.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lastclick.txt,0
+            printh 00
+            printh FF FF FF
+            short_click_tm.en=0
         
 TouchCap swipe
     Attributes
